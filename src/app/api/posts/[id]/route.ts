@@ -4,24 +4,38 @@ import type { RouteContext } from "next"
 
 
 // ✅ DELETE /api/posts/:id
+💡 Ganti isi src/app/api/posts/[id]/route.ts jadi begini:
+import { NextResponse, type NextRequest } from "next/server"
+import prisma from "@/lib/prisma"
+import type { RouteContext } from "next"
+
 export async function DELETE(
-  request: Request,
-  context: { params: { id: string } }
+  request: NextRequest,
+  context: RouteContext<{ id: string }>
 ) {
   try {
     const id = Number(context.params.id)
+
     if (isNaN(id)) {
       return NextResponse.json({ message: "Invalid ID" }, { status: 400 })
     }
 
-    const deleted = await prisma.post.delete({ where: { id } })
-    return NextResponse.json({ message: "Post deleted", deleted })
+    const deletedPost = await prisma.post.delete({
+      where: { id },
+    })
+
+    return NextResponse.json({ message: "Post deleted", deletedPost })
   } catch (error: any) {
+    console.error("🔥 Error DELETE /api/posts/[id]:", error)
+
     if (error.code === "P2025") {
       return NextResponse.json({ message: "Post not found" }, { status: 404 })
     }
-    console.error("🔥 Error DELETE /api/posts/[id]:", error)
-    return NextResponse.json({ message: "Failed to delete", error: String(error) }, { status: 500 })
+
+    return NextResponse.json(
+      { message: "Gagal menghapus data", error: String(error) },
+      { status: 500 }
+    )
   }
 }
 
