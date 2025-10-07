@@ -1,32 +1,27 @@
-import { NextResponse }  from "next/server"
-import  PrismaClient  from "@prisma/client"
+import { NextResponse } from "next/server"
+import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
 export async function GET() {
-    try {
-      if (!prisma || !prisma.post) {
-        throw new Error("Prisma client or post model is undefined")
-      }
+  try {
+    const posts = await prisma.post.findMany({
+      orderBy: { id: "desc" },
+    })
 
-      const posts = await prisma.post.findMany({
-        orderBy: { id: "desc" },
-      })
-
-      return NextResponse.json(posts)
-    } catch (error: any) {
-      return NextResponse.json(
-        { message: "Gagal mengambil data", error: String(error) },
-        { status: 500 }
-      )
-    }
+    return NextResponse.json(posts)
+  } catch (error: any) {
+    console.error("🔥 Error di GET /api/posts:", error)
+    return NextResponse.json(
+      { message: "Gagal mengambil data", error: String(error) },
+      { status: 500 }
+    )
+  }
 }
-
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-
     const { title, content, published } = body
 
     if (!title?.trim()) {
@@ -47,4 +42,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Gagal menyimpan post" }, { status: 500 })
   }
 }
-
