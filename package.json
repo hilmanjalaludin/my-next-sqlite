@@ -1,0 +1,37 @@
+{
+  "name": "my-next-sqlite",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.3",
+    "chart.js": "^4.4.5",
+    "jotai": "^2.10.1",
+    "next": "15.5.4",
+    "react": "19.1.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "19.1.0",
+    "sqlite3": "^5.1.7",
+    "swr": "^2.3.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.11.1",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.11.1",
+    "eslint-plugin-react": "^7.37.0",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.12",
+    "globals": "^15.9.0",
+    "prisma": "^6.16.3",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
