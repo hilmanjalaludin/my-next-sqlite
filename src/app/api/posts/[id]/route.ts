@@ -2,13 +2,6 @@ import { NextResponse, type NextRequest } from "next/server"
 import prisma from "@/lib/prisma"
 import type { RouteContext } from "next"
 
-
-// ✅ DELETE /api/posts/:id
-💡 Ganti isi src/app/api/posts/[id]/route.ts jadi begini:
-import { NextResponse, type NextRequest } from "next/server"
-import prisma from "@/lib/prisma"
-import type { RouteContext } from "next"
-
 export async function DELETE(
   request: NextRequest,
   context: RouteContext<{ id: string }>
