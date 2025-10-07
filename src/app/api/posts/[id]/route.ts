@@ -2,29 +2,21 @@ import { NextResponse, type NextRequest } from "next/server"
 import prisma from "@/lib/prisma"
 
 // ✅ DELETE /api/posts/:id
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const id = Number(params.id)
+export async function DELETE(request: NextRequest, context: any) {
+  const id = Number(context.params.id)
 
+  try {
     if (isNaN(id)) {
       return NextResponse.json({ message: "Invalid ID" }, { status: 400 })
     }
 
-    const deletedPost = await prisma.post.delete({
-      where: { id },
-    })
-
+    const deletedPost = await prisma.post.delete({ where: { id } })
     return NextResponse.json({ message: "Post deleted", deletedPost })
   } catch (error: any) {
     console.error("🔥 Error DELETE /api/posts/[id]:", error)
-
     if (error.code === "P2025") {
       return NextResponse.json({ message: "Post not found" }, { status: 404 })
     }
-
     return NextResponse.json(
       { message: "Gagal menghapus data", error: String(error) },
       { status: 500 }
@@ -33,12 +25,10 @@ export async function DELETE(
 }
 
 // ✅ PUT /api/posts/:id
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, context: any) {
+  const id = Number(context.params.id)
+
   try {
-    const id = Number(params.id)
     if (isNaN(id)) {
       return NextResponse.json({ message: "Invalid ID" }, { status: 400 })
     }
