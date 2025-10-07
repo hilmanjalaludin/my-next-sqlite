@@ -1,5 +1,7 @@
-import { NextResponse } from "next/server"
+import { NextResponse, type NextRequest } from "next/server"
 import prisma from "@/lib/prisma"
+import type { RouteContext } from "next"
+
 
 // ✅ DELETE /api/posts/:id
 export async function DELETE(
@@ -25,8 +27,8 @@ export async function DELETE(
 
 // ✅ PUT /api/posts/:id
 export async function PUT(
-  request: Request,
-  context: { params: { id: string } }
+  request: NextRequest,
+  context: RouteContext<{ id: string }>
 ) {
   try {
     const id = Number(context.params.id)
@@ -52,6 +54,9 @@ export async function PUT(
       return NextResponse.json({ message: "Post not found" }, { status: 404 })
     }
     console.error("🔥 Error PUT /api/posts/[id]:", err)
-    return NextResponse.json({ message: err.message || "Failed to update" }, { status: 500 })
+    return NextResponse.json(
+      { message: err.message || "Failed to update" },
+      { status: 500 }
+    )
   }
 }
