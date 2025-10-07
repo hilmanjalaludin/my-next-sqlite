@@ -4,57 +4,42 @@ import prisma from "@/lib/prisma"
 // ✅ DELETE /api/posts/:id
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
-  const id = Number(params.id)
-  console.log(`[DELETE /api/posts/${id}] Mulai hapus...`)
-
-  if (isNaN(id)) {
-    return NextResponse.json({ message: "Invalid ID" }, { status: 400 })
-  }
-
   try {
-    const deletedPost = await prisma.post.delete({
-      where: { id },
-    })
-
-    console.log(`[DELETE /api/posts/${id}] Berhasil dihapus.`)
-    return NextResponse.json({ message: "Post deleted", deletedPost })
-  } catch (error: any) {
-    console.error(`[DELETE /api/posts/${id}] Gagal:`, error)
-
-    if (error.code === "P2025") {
-      // Prisma error kalau record tidak ditemukan
-      return NextResponse.json({ message: "Post not found" }, { status: 404 })
+    const id = Number(context.params.id)
+    if (isNaN(id)) {
+      return NextResponse.json({ message: "Invalid ID" }, { status: 400 })
     }
 
-    return NextResponse.json(
-      { message: "Gagal menghapus data", error: String(error) },
-      { status: 500 }
-    )
+    const deleted = await prisma.post.delete({ where: { id } })
+    return NextResponse.json({ message: "Post deleted", deleted })
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      return NextResponse.json({ message: "Post not found" }, { status: 404 })
+    }
+    console.error("🔥 Error DELETE /api/posts/[id]:", error)
+    return NextResponse.json({ message: "Failed to delete", error: String(error) }, { status: 500 })
   }
 }
 
 // ✅ PUT /api/posts/:id
 export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
+  request: Request,
+  context: { params: { id: string } }
 ) {
-  const id = Number(params.id)
-
   try {
-    const body = await req.json()
-    const data: {
-      title?: string
-      content?: string | null
-      published?: boolean
-    } = {}
+    const id = Number(context.params.id)
+    if (isNaN(id)) {
+      return NextResponse.json({ message: "Invalid ID" }, { status: 400 })
+    }
+
+    const body = await request.json()
+    const data: any = {}
 
     if (typeof body.title === "string") data.title = body.title.trim()
-    if (typeof body.content === "string")
-      data.content = body.content.trim() || null
-    if (typeof body.published === "boolean")
-      data.published = body.published
+    if (typeof body.content === "string") data.content = body.content.trim()
+    if (typeof body.published === "boolean") data.published = body.published
 
     const updated = await prisma.post.update({
       where: { id },
@@ -63,14 +48,10 @@ export async function PUT(
 
     return NextResponse.json(updated)
   } catch (err: any) {
-  
-    if (err.code === "P2025") {
-      return NextResponse.json({ message: "Not found" }, { status: 404 })
+    if (err?.code === "P2025") {
+      return NextResponse.json({ message: "Post not found" }, { status: 404 })
     }
-
-    return NextResponse.json(
-      { message: err.message || "Failed to update post" },
-      { status: 500 }
-    )
+    console.error("🔥 Error PUT /api/posts/[id]:", err)
+    return NextResponse.json({ message: err.message || "Failed to update" }, { status: 500 })
   }
 }
