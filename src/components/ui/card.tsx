@@ -1,47 +1,33 @@
 import * as React from "react"
-import { cn } from "@/lib/utils" // optional kalau kamu pakai helper cn()
 
-export function Card({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+// ✅ Helper kecil untuk gabung className (tanpa "@/lib/utils")
+function cn(...classes) {
+  return classes.filter(Boolean).join(" ")
+}
+
+export function Card({ className, ...props }) {
   return (
     <div
-      className={`rounded-xl border bg-card text-card-foreground shadow ${className ?? ""}`}
+      className={cn("rounded-xl border bg-card text-card-foreground shadow", className)}
       {...props}
     />
   )
 }
 
-export function CardHeader({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+export function CardHeader({ className, ...props }) {
   return (
-    <div
-      className={`flex flex-col space-y-1.5 p-6 ${className ?? ""}`}
-      {...props}
-    />
+    <div className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />
   )
 }
 
-export function CardTitle({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLHeadingElement>) {
+export function CardTitle({ className, ...props }) {
   return (
-    <h3
-      className={`text-2xl font-semibold leading-none tracking-tight ${className ?? ""}`}
-      {...props}
-    />
+    <h3 className={cn("text-2xl font-semibold leading-none tracking-tight", className)} {...props} />
   )
 }
 
-export function CardContent({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+export function CardContent({ className, ...props }) {
   return (
-    <div className={`p-6 pt-0 ${className ?? ""}`} {...props} />
+    <div className={cn("p-6 pt-0", className)} {...props} />
   )
 }
