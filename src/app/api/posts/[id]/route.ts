@@ -1,14 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server"
 import prisma from "@/lib/prisma"
-import type { RouteContext } from "next"
 
-
+// ✅ DELETE /api/posts/:id
 export async function DELETE(
   request: NextRequest,
-  context: RouteContext<{ id: string }>
+  { params }: { params: { id: string } }
 ) {
   try {
-    const id = Number(context.params.id)
+    const id = Number(params.id)
 
     if (isNaN(id)) {
       return NextResponse.json({ message: "Invalid ID" }, { status: 400 })
@@ -36,16 +35,16 @@ export async function DELETE(
 // ✅ PUT /api/posts/:id
 export async function PUT(
   request: NextRequest,
-  context: RouteContext<{ id: string }>
+  { params }: { params: { id: string } }
 ) {
   try {
-    const id = Number(context.params.id)
+    const id = Number(params.id)
     if (isNaN(id)) {
       return NextResponse.json({ message: "Invalid ID" }, { status: 400 })
     }
 
     const body = await request.json()
-    const data: any = {}
+    const data: Record<string, any> = {}
 
     if (typeof body.title === "string") data.title = body.title.trim()
     if (typeof body.content === "string") data.content = body.content.trim()
@@ -61,6 +60,7 @@ export async function PUT(
     if (err?.code === "P2025") {
       return NextResponse.json({ message: "Post not found" }, { status: 404 })
     }
+
     console.error("🔥 Error PUT /api/posts/[id]:", err)
     return NextResponse.json(
       { message: err.message || "Failed to update" },
